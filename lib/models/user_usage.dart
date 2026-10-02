@@ -22,8 +22,16 @@ class UserUsage {
   });
 
   int get totalBytes => downloadBytes + uploadBytes;
-  int? get remainingBytes =>
-      quotaBytes == null ? null : (quotaBytes! - totalBytes).clamp(0, quotaBytes!);
+ int? get remainingBytes {
+  if (quotaBytes == null) return null;
+
+  final remaining = quotaBytes! - totalBytes;
+
+  if (remaining <= 0) return 0;
+  if (remaining >= quotaBytes!) return quotaBytes!;
+
+  return remaining;
+}
 
   double? get percentUsed =>
       quotaBytes == null || quotaBytes == 0 ? null : totalBytes / quotaBytes!;
